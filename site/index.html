@@ -115,7 +115,7 @@
           </div>
           <div class="feature-media">
             <span class="blob" aria-hidden="true"></span>
-            <span class="seta seta--escuro seta--baixo" aria-hidden="true"></span>
+            <span class="bars bars--escuro bars--baixo" aria-hidden="true"><i></i><i></i><i></i></span>
             <figure class="iphone">
               <span class="iphone-botao iphone-acao" aria-hidden="true"></span>
               <span class="iphone-botao iphone-volume-mais" aria-hidden="true"></span>
@@ -139,7 +139,7 @@
           </div>
           <div class="feature-media">
             <span class="blob blob--lima" style="--giro: 120deg" aria-hidden="true"></span>
-            <span class="seta seta--cima" aria-hidden="true"></span>
+            <span class="bars bars--cima" aria-hidden="true"><i></i><i></i><i></i></span>
             <figure class="iphone">
               <span class="iphone-botao iphone-acao" aria-hidden="true"></span>
               <span class="iphone-botao iphone-volume-mais" aria-hidden="true"></span>
@@ -163,7 +163,7 @@
           </div>
           <div class="feature-media">
             <span class="blob" style="--giro: 40deg" aria-hidden="true"></span>
-            <span class="seta seta--escuro seta--cima" aria-hidden="true"></span>
+            <span class="bars bars--escuro bars--cima" aria-hidden="true"><i></i><i></i><i></i></span>
             <figure class="iphone">
               <span class="iphone-botao iphone-acao" aria-hidden="true"></span>
               <span class="iphone-botao iphone-volume-mais" aria-hidden="true"></span>
@@ -187,7 +187,7 @@
           </div>
           <div class="feature-media">
             <span class="blob blob--lima" style="--giro: 200deg" aria-hidden="true"></span>
-            <span class="seta seta--baixo" aria-hidden="true"></span>
+            <span class="bars bars--baixo" aria-hidden="true"><i></i><i></i><i></i></span>
             <figure class="iphone">
               <span class="iphone-botao iphone-acao" aria-hidden="true"></span>
               <span class="iphone-botao iphone-volume-mais" aria-hidden="true"></span>
@@ -210,7 +210,7 @@
           </div>
           <div class="feature-media">
             <span class="blob" style="--giro: 290deg" aria-hidden="true"></span>
-            <span class="seta seta--escuro seta--baixo" aria-hidden="true"></span>
+            <span class="bars bars--escuro bars--baixo" aria-hidden="true"><i></i><i></i><i></i></span>
             <figure class="iphone">
               <span class="iphone-botao iphone-acao" aria-hidden="true"></span>
               <span class="iphone-botao iphone-volume-mais" aria-hidden="true"></span>
@@ -225,6 +225,7 @@
             </figure>
           </div>
         </article>
+        <p class="features-mais"><a class="btn btn--claro" href="recursos/">Explorar recursos <span aria-hidden="true">›</span></a></p>
       </div>
     </section>
 
@@ -254,6 +255,7 @@
           <ul>
             <li><a href="sobre/">Sobre</a></li>
             <li><a href="novidades/">Novidades</a></li>
+            <li><a href="recursos/">Recursos</a></li>
           </ul>
         </div>
         <div>
@@ -304,11 +306,13 @@
       const showcase = trio.closest('.showcase');
       const frases = [...showcase.querySelectorAll('.showcase-claim .claim')];
       const celulares = [...trio.querySelectorAll('.iphone')];
-      // cor da faixa de cada tela em OKLCH: luminosidade, croma e matiz
+      // A faixa segue a cor de destaque de cada tela, em OKLCH (luminosidade,
+      // croma e matiz): o lima do cartão de missão, o rosa da barra "Você" do
+      // ranking e o coral da capa do artista.
       const CORES = {
-        inicio: [0.6549, 0.2399, 9.85],   // rosa da marca, #ff2d6f
-        ranking: [0.54, 0.25, 292],       // violeta, #7a39ef
-        artista: [0.9391, 0.208, 121.39], // lima da marca, #d6ff3f
+        inicio: [0.9391, 0.208, 121.39], // #d6ff3f
+        ranking: [0.6549, 0.2399, 9.85], // #ff2d6f
+        artista: [0.6426, 0.1866, 31.72], // #e8553d
       };
       let matiz = CORES[showcase.dataset.tela][2];
       const menosMovimento = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -341,15 +345,15 @@
       // começa devagar, acelera e freia no fim, sem tranco no meio
       const suave = (t) => (1 - Math.cos(Math.PI * t)) / 2;
 
-      // Leva a faixa e a frase para a tela que está chegando. O matiz só
-      // desce, então a cor percorre a roda num sentido só (rosa, violeta,
-      // azul, verde, lima, amarelo, laranja, rosa) e nunca corta pelo cinza
-      // que fica entre duas cores opostas. O CSS anima os valores.
+      // Leva a faixa e a frase para a tela que está chegando. O matiz vai
+      // pelo caminho mais curto da roda de cores; como as três cores são
+      // quentes, a troca passa por amarelo e laranja e nunca pelo cinza que
+      // aparece quando se mistura cor com cor direto. O CSS anima os valores.
       function mostrar(tela) {
         const [luz, croma, alvo] = CORES[tela];
         let h = alvo;
-        while (h > matiz) h -= 360;
-        while (h <= matiz - 360) h += 360;
+        while (h - matiz > 180) h -= 360;
+        while (h - matiz < -180) h += 360;
         matiz = h;
         showcase.style.setProperty('--faixa-l', luz);
         showcase.style.setProperty('--faixa-c', croma);

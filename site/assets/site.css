@@ -125,6 +125,19 @@ strong {
   font-size: 14px;
 }
 
+/* botão branco sobre o fundo claro, como o "Explorar recursos" */
+.btn--claro {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 2px rgba(11, 11, 16, 0.06);
+}
+
+.btn--claro:hover {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 8px 20px rgba(11, 11, 16, 0.1);
+}
+
 /* Cabeçalho */
 
 .site-header {
@@ -391,25 +404,25 @@ strong {
 /* Home · trio de celulares sobre a faixa colorida */
 
 /* A cor da faixa é um OKLCH montado com estas três variáveis. Registradas,
-   elas são animadas como números, e o script do carrossel faz o matiz andar
-   sempre para o mesmo lado da roda de cores. Os valores iniciais são o rosa
-   da marca (#ff2d6f). */
+   elas são animadas como números, e o script do carrossel leva o matiz pelo
+   caminho mais curto da roda de cores. Os valores iniciais são o lima do
+   cartão de missão (#d6ff3f), a cor da tela inicial, que abre na frente. */
 @property --faixa-l {
   syntax: "<number>";
   inherits: true;
-  initial-value: 0.6549;
+  initial-value: 0.9391;
 }
 
 @property --faixa-c {
   syntax: "<number>";
   inherits: true;
-  initial-value: 0.2399;
+  initial-value: 0.208;
 }
 
 @property --faixa-h {
   syntax: "<number>";
   inherits: true;
-  initial-value: 9.85;
+  initial-value: 121.39;
 }
 
 .showcase {
@@ -428,10 +441,12 @@ strong {
 }
 
 /* na faixa lima, texto branco não tem contraste */
-.showcase[data-tela="artista"] {
+.showcase[data-tela="inicio"] {
   --faixa-texto: var(--ink);
 }
 
+/* Listras finas na diagonal, como as do cartão de missão do app: linhas
+   um pouco mais escuras que a cor da faixa, a uns 60 graus. */
 .showcase::before {
   content: "";
   position: absolute;
@@ -439,12 +454,22 @@ strong {
   right: 0;
   bottom: 0;
   left: 0;
-  background: var(--pink);
+  background-image: repeating-linear-gradient(120deg, rgba(11, 11, 16, 0.07) 0 4px, transparent 5px 16px);
+  background-color: oklch(var(--faixa-l) var(--faixa-c) var(--faixa-h));
 }
 
-@supports (color: oklch(0 0 0)) {
-  .showcase::before {
-    background: oklch(var(--faixa-l) var(--faixa-c) var(--faixa-h));
+/* navegador sem OKLCH: a cor troca direto, sem passar pelas intermediárias */
+@supports not (color: oklch(0 0 0)) {
+  .showcase[data-tela="inicio"]::before {
+    background-color: var(--lime);
+  }
+
+  .showcase[data-tela="ranking"]::before {
+    background-color: var(--pink);
+  }
+
+  .showcase[data-tela="artista"]::before {
+    background-color: #e8553d;
   }
 }
 
@@ -661,9 +686,12 @@ strong {
   background: var(--surface);
 }
 
+/* Os títulos cabem sempre em uma linha: o tamanho acompanha a largura da
+   coluna, e quem manda é o mais longo, "Pontos viram experiências", que
+   fica no cartão (coluna mais estreita). Todos usam o mesmo tamanho. */
 .feature h2 {
   margin: 0 0 14px;
-  font: 800 clamp(27px, 3.4vw, 36px) / 1.15 Sora, Manrope, sans-serif;
+  font: 800 clamp(16px, calc(7.4vw - 7px), 28px) / 1.15 Sora, Manrope, sans-serif;
   letter-spacing: -0.025em;
   color: var(--ink);
 }
@@ -703,23 +731,44 @@ strong {
   background: var(--lime);
 }
 
-.feature-media .seta {
-  position: absolute;
-  z-index: 2;
-  font-size: clamp(32px, 3.8vw, 44px);
+/* Enfeite das funcionalidades: as três barras inclinadas */
+.bars {
+  display: inline-flex;
+  gap: 0.035em;
+  transform: skewX(-22deg);
 }
 
-.feature-media .seta--baixo {
+.bars i {
+  width: 0.09em;
+  height: 0.5em;
+  background: var(--pink-strong);
+}
+
+.bars i:nth-child(2) {
+  opacity: 0.6;
+}
+
+.bars i:nth-child(3) {
+  opacity: 0.28;
+}
+
+.feature-media .bars {
+  position: absolute;
+  z-index: 2;
+  font-size: clamp(56px, 7vw, 80px);
+}
+
+.feature-media .bars--baixo {
   bottom: 10%;
   left: 8%;
 }
 
-.feature-media .seta--cima {
+.feature-media .bars--cima {
   top: 12%;
   right: 8%;
 }
 
-.seta--escuro {
+.bars--escuro i {
   background: var(--ink);
 }
 
@@ -727,6 +776,11 @@ strong {
   .feature {
     grid-template-columns: 1fr 1fr;
     gap: 56px;
+  }
+
+  /* em duas colunas, cada uma tem metade da largura */
+  .feature h2 {
+    font-size: clamp(16px, calc(3.3vw - 3.5px), 28px);
   }
 
   .feature--invertida .feature-media {
@@ -1633,5 +1687,188 @@ strong {
 
   .btn {
     transition: none;
+  }
+}
+
+/* Home · botão depois das funcionalidades */
+
+.features-mais {
+  margin: 0;
+  text-align: center;
+}
+
+/* Recursos: menu à esquerda, celular no meio e texto à direita. No celular
+   o menu vira uma fileira que rola para o lado, acima do aparelho. */
+
+.recursos {
+  padding: clamp(28px, 6vw, 80px) 0 clamp(56px, 9vw, 112px);
+}
+
+.recursos-grade {
+  display: grid;
+  gap: 28px;
+  justify-items: center;
+}
+
+.recursos-menu {
+  display: flex;
+  gap: 8px;
+  width: calc(100% + 2 * var(--gutter));
+  margin: 0 calc(-1 * var(--gutter));
+  padding: 4px var(--gutter);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.recursos-menu::-webkit-scrollbar {
+  display: none;
+}
+
+.recursos-aba {
+  flex: none;
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-2);
+  font: 700 15px/1.2 Manrope, sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.recursos-aba:hover {
+  color: var(--ink);
+}
+
+.recursos-aba[aria-selected="true"] {
+  background: var(--pink-strong);
+  color: #fff;
+}
+
+.recursos-aba:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.recursos-celular {
+  width: clamp(220px, 62vw, 290px);
+}
+
+/* as telas ficam empilhadas dentro do aparelho e trocam por transparência */
+.recursos-celular .iphone-tela img {
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+.recursos-celular .iphone-tela img[data-estado="ativo"] {
+  opacity: 1;
+}
+
+/* Os textos também ficam empilhados: a altura é a do maior e nada pula.
+   O que sai some; o que entra sobe um pouco, logo depois. */
+.recursos-textos {
+  display: grid;
+  width: 100%;
+  max-width: 30em;
+  text-align: center;
+}
+
+.recursos-painel {
+  grid-area: 1 / 1;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 0.3s;
+}
+
+.recursos-painel[data-estado="ativo"] {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  transition:
+    opacity 0.45s ease 0.1s,
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s,
+    visibility 0s;
+}
+
+.recursos-painel:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 8px;
+  border-radius: 8px;
+}
+
+.recursos-painel h2 {
+  margin: 0 0 12px;
+  font: 800 clamp(26px, 2.6vw, 32px) / 1.15 Sora, Manrope, sans-serif;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+.recursos-painel p {
+  margin: 0 0 12px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+@media (min-width: 960px) {
+  .recursos-grade {
+    grid-template-columns: 220px minmax(0, 300px) minmax(0, 1fr);
+    column-gap: clamp(40px, 5vw, 80px);
+    align-items: center;
+    justify-items: stretch;
+  }
+
+  /* linha tracejada entre o menu e o celular, de cima a baixo */
+  .recursos-menu {
+    flex-direction: column;
+    gap: 10px;
+    align-self: stretch;
+    justify-content: center;
+    width: auto;
+    margin: 0;
+    padding: 24px 40px 24px 0;
+    overflow: visible;
+    border-right: 1px dashed #c3c5d1;
+  }
+
+  .recursos-aba {
+    padding: 15px 18px;
+    border-radius: 12px;
+    background: none;
+    font-size: 17px;
+    font-weight: 600;
+    text-align: left;
+    white-space: normal;
+  }
+
+  .recursos-aba:hover {
+    background: rgba(11, 11, 16, 0.05);
+  }
+
+  .recursos-aba[aria-selected="true"] {
+    background: var(--pink-strong);
+  }
+
+  .recursos-celular {
+    width: 100%;
+  }
+
+  .recursos-textos {
+    text-align: left;
+  }
+
+  .recursos-painel p {
+    font-size: 19px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recursos-painel {
+    transform: none;
   }
 }
