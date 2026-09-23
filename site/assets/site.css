@@ -388,15 +388,48 @@ strong {
   margin-top: 30px;
 }
 
-/* Home · trio de celulares sobre a faixa rosa */
+/* Home · trio de celulares sobre a faixa colorida */
+
+/* A cor da faixa é um OKLCH montado com estas três variáveis. Registradas,
+   elas são animadas como números, e o script do carrossel faz o matiz andar
+   sempre para o mesmo lado da roda de cores. Os valores iniciais são o rosa
+   da marca (#ff2d6f). */
+@property --faixa-l {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0.6549;
+}
+
+@property --faixa-c {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0.2399;
+}
+
+@property --faixa-h {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 9.85;
+}
 
 .showcase {
   --w: clamp(196px, 25vw, 300px);
   --h: calc(var(--w) * 844 / 390);
   --acima: calc(var(--h) * 0.42);
+  --faixa-texto: #fff;
   position: relative;
   overflow: hidden;
   padding: 0 0 clamp(40px, 6vw, 72px);
+  /* mesma duração e curva da volta dos celulares */
+  transition:
+    --faixa-l 1.3s cubic-bezier(0.37, 0, 0.63, 1),
+    --faixa-c 1.3s cubic-bezier(0.37, 0, 0.63, 1),
+    --faixa-h 1.3s cubic-bezier(0.37, 0, 0.63, 1);
+}
+
+/* na faixa lima, texto branco não tem contraste */
+.showcase[data-tela="artista"] {
+  --faixa-texto: var(--ink);
 }
 
 .showcase::before {
@@ -407,6 +440,12 @@ strong {
   bottom: 0;
   left: 0;
   background: var(--pink);
+}
+
+@supports (color: oklch(0 0 0)) {
+  .showcase::before {
+    background: oklch(var(--faixa-l) var(--faixa-c) var(--faixa-h));
+  }
 }
 
 /* minmax(0, 1fr): sem isso o trio, mais largo que a tela no celular,
@@ -482,7 +521,7 @@ strong {
 }
 
 .trio-pausa:focus-visible {
-  outline: 2px solid #fff;
+  outline: 2px solid var(--faixa-texto);
   outline-offset: 3px;
 }
 
@@ -503,11 +542,15 @@ strong {
 .showcase-claim,
 .showcase-stores {
   margin: 0;
-  color: #fff;
+  color: var(--faixa-texto);
   text-align: center;
+  transition: color 1.3s cubic-bezier(0.37, 0, 0.63, 1);
 }
 
+/* As três frases ficam empilhadas na mesma célula, então a altura é a da
+   maior e nada pula quando elas trocam. */
 .showcase-claim {
+  display: grid;
   grid-row: 3;
   padding-top: 32px;
   font: 800 clamp(24px, 2.1vw, 28px) / 1.2 Sora, Manrope, sans-serif;
@@ -521,6 +564,38 @@ strong {
   letter-spacing: 0;
 }
 
+/* A frase que sai sobe e some; a que entra vem de baixo, um pouco depois,
+   com um desfoque que se desfaz. */
+.showcase-claim .claim {
+  grid-area: 1 / 1;
+  margin: 0;
+  opacity: 0;
+  transform: translateY(16px);
+  filter: blur(6px);
+  transition:
+    opacity 0.5s cubic-bezier(0.37, 0, 0.63, 1),
+    transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.5s cubic-bezier(0.37, 0, 0.63, 1);
+}
+
+.showcase-claim .claim[data-estado="ativo"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition-delay: 0.35s;
+}
+
+.showcase-claim .claim[data-estado="saindo"] {
+  transform: translateY(-16px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase-claim .claim {
+    transform: none;
+    filter: none;
+  }
+}
+
 .showcase-stores {
   grid-row: 4;
   padding-top: 14px;
@@ -528,7 +603,7 @@ strong {
 }
 
 .showcase-stores strong {
-  color: #fff;
+  color: inherit;
   font-weight: 800;
 }
 

@@ -51,10 +51,10 @@
       </div>
     </section>
 
-    <section class="showcase" aria-label="Telas do ImagineUP">
+    <section class="showcase" data-tela="inicio" aria-label="Telas do ImagineUP">
       <div class="wrap wrap--wide showcase-inner">
         <div class="trio">
-          <figure class="iphone" data-pos="esq">
+          <figure class="iphone" data-pos="esq" data-tela="artista">
             <span class="iphone-botao iphone-acao" aria-hidden="true"></span>
             <span class="iphone-botao iphone-volume-mais" aria-hidden="true"></span>
             <span class="iphone-botao iphone-volume-menos" aria-hidden="true"></span>
@@ -66,7 +66,7 @@
               <div class="iphone-gesto" aria-hidden="true"></div>
             </div>
           </figure>
-          <figure class="iphone" data-pos="centro">
+          <figure class="iphone" data-pos="centro" data-tela="inicio">
             <span class="iphone-botao iphone-acao" aria-hidden="true"></span>
             <span class="iphone-botao iphone-volume-mais" aria-hidden="true"></span>
             <span class="iphone-botao iphone-volume-menos" aria-hidden="true"></span>
@@ -78,7 +78,7 @@
               <div class="iphone-gesto" aria-hidden="true"></div>
             </div>
           </figure>
-          <figure class="iphone" data-pos="dir">
+          <figure class="iphone" data-pos="dir" data-tela="ranking">
             <span class="iphone-botao iphone-acao" aria-hidden="true"></span>
             <span class="iphone-botao iphone-volume-mais" aria-hidden="true"></span>
             <span class="iphone-botao iphone-volume-menos" aria-hidden="true"></span>
@@ -91,7 +91,12 @@
             </div>
           </figure>
         </div>
-        <p class="showcase-claim">Fã de verdade sobe no ranking<span>App oficial dos artistas da Imagine Music</span></p>
+        <!-- uma frase por tela; o script do carrossel mostra a da tela que está na frente -->
+        <div class="showcase-claim">
+          <p class="claim" data-tela="inicio" data-estado="ativo">Todo dia tem missão nova<span>Cumpra, ganhe pontos e fortaleça o seu artista</span></p>
+          <p class="claim" data-tela="ranking" aria-hidden="true">Fã de verdade sobe no ranking<span>Veja o pódio da temporada e a sua posição</span></p>
+          <p class="claim" data-tela="artista" aria-hidden="true">Cada artista tem a sua central<span>Mural, agenda de shows e os top fãs da semana</span></p>
+        </div>
         <p class="showcase-stores">Em breve no <strong>iPhone</strong> e no <strong>Android</strong></p>
       </div>
       <button class="trio-pausa" type="button" aria-pressed="false" aria-label="Pausar a animação dos celulares">
@@ -288,14 +293,24 @@
     // Carrossel do trio de celulares: os três ficam num círculo visto de
     // frente e, a cada volta, o círculo gira 120 graus. O da direita vem
     // para a frente, o da frente vai para a esquerda e o da esquerda passa
-    // por trás até a direita. Para quando: a pessoa pausa, o mouse está
-    // sobre os celulares, a seção sai da tela, a aba fica oculta ou o
-    // sistema pede menos movimento.
+    // por trás até a direita. A cada volta a faixa troca de cor e a frase da
+    // lateral passa a falar da tela que chegou na frente. Para quando: a
+    // pessoa pausa, o mouse está sobre os celulares, a seção sai da tela, a
+    // aba fica oculta ou o sistema pede menos movimento.
     (() => {
       const trio = document.querySelector('.trio');
       const botao = document.querySelector('.trio-pausa');
       if (!trio || !botao) return;
+      const showcase = trio.closest('.showcase');
+      const frases = [...showcase.querySelectorAll('.showcase-claim .claim')];
       const celulares = [...trio.querySelectorAll('.iphone')];
+      // cor da faixa de cada tela em OKLCH: luminosidade, croma e matiz
+      const CORES = {
+        inicio: [0.6549, 0.2399, 9.85],   // rosa da marca, #ff2d6f
+        ranking: [0.54, 0.25, 292],       // violeta, #7a39ef
+        artista: [0.9391, 0.208, 121.39], // lima da marca, #d6ff3f
+      };
+      let matiz = CORES[showcase.dataset.tela][2];
       const menosMovimento = window.matchMedia('(prefers-reduced-motion: reduce)');
       const ANGULO = { centro: 0, dir: 120, esq: -120 };
       const PROXIMA = { dir: 'centro', centro: 'esq', esq: 'dir' };
@@ -326,8 +341,35 @@
       // começa devagar, acelera e freia no fim, sem tranco no meio
       const suave = (t) => (1 - Math.cos(Math.PI * t)) / 2;
 
+      // Leva a faixa e a frase para a tela que está chegando. O matiz só
+      // desce, então a cor percorre a roda num sentido só (rosa, violeta,
+      // azul, verde, lima, amarelo, laranja, rosa) e nunca corta pelo cinza
+      // que fica entre duas cores opostas. O CSS anima os valores.
+      function mostrar(tela) {
+        const [luz, croma, alvo] = CORES[tela];
+        let h = alvo;
+        while (h > matiz) h -= 360;
+        while (h <= matiz - 360) h += 360;
+        matiz = h;
+        showcase.style.setProperty('--faixa-l', luz);
+        showcase.style.setProperty('--faixa-c', croma);
+        showcase.style.setProperty('--faixa-h', matiz);
+        showcase.dataset.tela = tela;
+        for (const frase of frases) {
+          if (frase.dataset.tela === tela) {
+            frase.dataset.estado = 'ativo';
+            frase.removeAttribute('aria-hidden');
+          } else {
+            frase.dataset.estado = frase.dataset.estado === 'ativo' ? 'saindo' : '';
+            frase.setAttribute('aria-hidden', 'true');
+          }
+        }
+      }
+
       function girar() {
         espera = null;
+        const chegando = celulares.find((celular) => celular.dataset.pos === 'dir');
+        if (chegando) mostrar(chegando.dataset.tela);
         let inicio = null;
         const passo = (agora) => {
           if (inicio === null) inicio = agora;
