@@ -202,28 +202,6 @@ strong {
   }
 }
 
-/* Marca: as três barras inclinadas do app */
-
-.bars {
-  display: inline-flex;
-  gap: 0.035em;
-  transform: skewX(-22deg);
-}
-
-.bars i {
-  width: 0.09em;
-  height: 0.5em;
-  background: var(--pink-strong);
-}
-
-.bars i:nth-child(2) {
-  opacity: 0.6;
-}
-
-.bars i:nth-child(3) {
-  opacity: 0.28;
-}
-
 /* Marca: a seta do "e" do logo Imagine. A imagem é só a forma; a cor vem do
    background, e o translate compensa a ponta, que pesa pouco, para a seta
    parecer centralizada. */
@@ -650,23 +628,23 @@ strong {
   background: var(--lime);
 }
 
-.feature-media .bars {
+.feature-media .seta {
   position: absolute;
   z-index: 2;
-  font-size: clamp(56px, 7vw, 80px);
+  font-size: clamp(32px, 3.8vw, 44px);
 }
 
-.feature-media .bars--baixo {
+.feature-media .seta--baixo {
   bottom: 10%;
   left: 8%;
 }
 
-.feature-media .bars--cima {
+.feature-media .seta--cima {
   top: 12%;
   right: 8%;
 }
 
-.bars--escuro i {
+.seta--escuro {
   background: var(--ink);
 }
 
