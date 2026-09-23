@@ -224,6 +224,19 @@ strong {
   opacity: 0.28;
 }
 
+/* Marca: a seta do "e" do logo Imagine. A imagem é só a forma; a cor vem do
+   background, e o translate compensa a ponta, que pesa pouco, para a seta
+   parecer centralizada. */
+.seta {
+  display: inline-block;
+  width: 0.9em;
+  height: 1em;
+  background: var(--pink-strong);
+  transform: translateX(0.07em);
+  -webkit-mask: url(seta.png) center / contain no-repeat;
+  mask: url(seta.png) center / contain no-repeat;
+}
+
 /* iPhone (VitrineUP, iphone-modelo) */
 
 .iphone {
@@ -1207,11 +1220,8 @@ strong {
   background: var(--pink);
 }
 
-.news-collage-top .marca .bars {
-  font-size: 22px;
-}
-
-.news-collage-top .marca .bars i {
+.news-collage-top .marca .seta {
+  font-size: 15px;
   background: #fff;
 }
 
@@ -1270,11 +1280,8 @@ strong {
   background: linear-gradient(180deg, #ff4f86 0%, var(--pink) 45%, var(--pink-strong) 100%);
 }
 
-.download-banner .bars {
-  font-size: clamp(90px, 22vw, 120px);
-}
-
-.download-banner .bars i {
+.download-banner .seta {
+  font-size: clamp(64px, 16vw, 80px);
   background: #fff;
 }
 
