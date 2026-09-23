@@ -4,6 +4,28 @@
    Manrope no texto. O iPhone vem do VitrineUP (iphone-modelo), convertido
    para unidades de contêiner para escalar em qualquer largura. */
 
+/* Fontes servidas pelo próprio site, no lugar do Google Fonts: um arquivo
+   variável de cada família, só com os caracteres latinos, que cobrem o
+   português. Menos uma conexão antes de pintar a tela, e o IP de quem visita
+   não vai para o Google. Licença SIL OFL 1.1 (fontes/LICENCA.txt). */
+@font-face {
+  font-family: Manrope;
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url(fontes/manrope.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: Sora;
+  font-style: normal;
+  font-weight: 700 800;
+  font-display: swap;
+  src: url(fontes/sora.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   color-scheme: light;
   --bg: #f6f6f8;
@@ -13,7 +35,7 @@
   --ink-2: #3b3b45;
   --ink-3: #6c6c78;
   --pink: #ff2d6f;        /* marca: áreas grandes, faixa e formas */
-  --pink-strong: #e0115a; /* texto e botões sobre fundo claro (contraste AA) */
+  --pink-strong: #d9105a; /* texto e botões sobre fundo claro: 4,65:1 no fundo e 5:1 no branco (AA) */
   --lime: #d6ff3f;
   --dark: #0b0b10;
   --gutter: 16px;

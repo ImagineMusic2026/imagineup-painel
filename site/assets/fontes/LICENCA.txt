@@ -1,0 +1,10 @@
+Fontes usadas no site
+
+Manrope: Copyright 2018 The Manrope Project Authors (https://github.com/sharanda/manrope)
+Sora: Copyright 2019 The Sora Project Authors (https://github.com/sora-xor/sora-font)
+
+As duas são distribuídas sob a SIL Open Font License, versão 1.1:
+https://openfontlicense.org
+
+Os arquivos .woff2 são as versões variáveis do Google Fonts, só com o
+subconjunto latino, que cobre todos os caracteres do português.

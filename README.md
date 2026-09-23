@@ -25,6 +25,8 @@ npx serve site
 
 Qualquer hospedagem de arquivos estáticos serve para publicar: basta apontar para a pasta `site/`. O código QR da página Baixar aponta para a própria página, então funciona em qualquer domínio.
 
+Na Vercel, `site/vercel.json` faz cada página ter um endereço só (com barra no fim) e guarda em cache as fontes e as telas do app.
+
 ## Antes de publicar
 
 - Os textos da Política de Privacidade e dos Termos de Uso passam pela revisão do jurídico da Imagine Music.
