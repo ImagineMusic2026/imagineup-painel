@@ -138,6 +138,40 @@ strong {
   box-shadow: 0 8px 20px rgba(11, 11, 16, 0.1);
 }
 
+/* Pulso discreto: um brilho rosa sai da borda do botão, se afasta e some, e
+   o botão fica parado. A sombra só existe do lado de fora da borda, então a
+   cor do botão não muda. */
+.btn--pulso {
+  position: relative;
+  isolation: isolate;
+}
+
+.btn--pulso::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  animation: pulso 2.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@keyframes pulso {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 45, 111, 0.3);
+  }
+
+  70%,
+  100% {
+    box-shadow: 0 0 6px 14px rgba(255, 45, 111, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn--pulso::before {
+    animation: none;
+  }
+}
+
 /* Cabeçalho */
 
 .site-header {
