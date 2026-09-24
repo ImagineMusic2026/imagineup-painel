@@ -439,10 +439,11 @@ strong {
 
 .hero h1 {
   margin: 0 auto;
-  max-width: 22ch;
+  max-width: 26ch;
   font: 800 clamp(40px, 6vw, 66px) / 1.02 Sora, Manrope, sans-serif;
   letter-spacing: -0.04em;
   color: var(--ink);
+  text-wrap: balance;
 }
 
 .hero p {
@@ -487,7 +488,12 @@ strong {
   --acima: calc(var(--h) * 0.42);
   --faixa-texto: #fff;
   position: relative;
+  /* Corta só na horizontal: esconde o balanço lateral dos celulares nas
+     telas estreitas e deixa o celular subir acima da seção quando flutua.
+     Navegador sem "clip" fica no "hidden", que também corta em cima. */
   overflow: hidden;
+  overflow-x: clip;
+  overflow-y: visible;
   padding: 0 0 clamp(40px, 6vw, 72px);
   /* mesma duração e curva da volta dos celulares */
   transition:
@@ -576,6 +582,57 @@ strong {
 .trio .iphone[data-pos="dir"] {
   transform: translate(4%, -2%) scale(0.82);
   z-index: 1;
+}
+
+/* Flutuação: cada celular sobe e desce devagar e balança um pouco no
+   próprio eixo, fora de sincronia com os outros (6 s e 9 s, com começos
+   diferentes). Usa as propriedades translate e rotate, que se somam ao
+   transform que o carrossel escreve a cada quadro, então as duas coisas
+   não se atrapalham. O botão de pausa também para a flutuação. */
+.trio .iphone {
+  animation:
+    flutuar 6s ease-in-out infinite,
+    balancar 9s ease-in-out infinite;
+}
+
+.trio .iphone:nth-child(2) {
+  animation-delay: -2s, -5s;
+}
+
+.trio .iphone:nth-child(3) {
+  animation-delay: -4s, -2.5s;
+}
+
+.trio.parado .iphone {
+  animation-play-state: paused;
+}
+
+@keyframes flutuar {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+
+  50% {
+    translate: 0 -1.5%;
+  }
+}
+
+@keyframes balancar {
+  0%,
+  100% {
+    rotate: -0.6deg;
+  }
+
+  50% {
+    rotate: 0.6deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trio .iphone {
+    animation: none;
+  }
 }
 
 .trio-pausa {
@@ -1173,6 +1230,7 @@ strong {
   font: 800 clamp(30px, 4vw, 38px) / 1.1 Sora, Manrope, sans-serif;
   letter-spacing: -0.025em;
   color: var(--ink);
+  text-wrap: balance;
 }
 
 .page-card > p {
@@ -1453,6 +1511,7 @@ strong {
   font: 800 clamp(22px, 3vw, 27px) / 1.2 Sora, Manrope, sans-serif;
   letter-spacing: -0.02em;
   color: var(--ink);
+  text-wrap: balance;
 }
 
 .download-card > p {
@@ -1539,6 +1598,7 @@ strong {
   font: 800 clamp(30px, 4.6vw, 42px) / 1.12 Sora, Manrope, sans-serif;
   letter-spacing: -0.025em;
   color: #fff;
+  text-wrap: balance;
 }
 
 .help-hero p {
@@ -1758,6 +1818,21 @@ strong {
 
 .recursos {
   padding: clamp(28px, 6vw, 80px) 0 clamp(56px, 9vw, 112px);
+}
+
+.recursos-titulo {
+  margin: 0 0 clamp(24px, 4vw, 48px);
+  font: 800 clamp(26px, 3.2vw, 38px) / 1.15 Sora, Manrope, sans-serif;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  text-align: center;
+  text-wrap: balance;
+}
+
+@media (min-width: 960px) {
+  .recursos-titulo {
+    text-align: left;
+  }
 }
 
 .recursos-grade {

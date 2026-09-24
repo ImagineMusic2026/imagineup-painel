@@ -44,7 +44,7 @@
   <main id="conteudo">
     <section class="hero">
       <div class="wrap wrap--wide">
-        <h1>Seu fandom vale pontos</h1>
+        <h1>App de fãs dos artistas da Imagine Music</h1>
         <p>A central de fãs oficial dos artistas da Imagine Music. Complete missões, traga a galera para o app e troque seus pontos por experiências.</p>
         <a class="btn" href="baixar/">Começar <span aria-hidden="true">›</span></a>
       </div>
@@ -395,6 +395,7 @@
         clearTimeout(espera);
         espera = null;
         botao.setAttribute('aria-pressed', String(pausado));
+        trio.classList.toggle('parado', pausado); // a pausa também para a flutuação
         if (quadro === null && !pausado && visivel && !sobre && !document.hidden) espera = setTimeout(girar, ESPERA);
       }
 
